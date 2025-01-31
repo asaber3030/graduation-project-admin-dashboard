@@ -24,17 +24,16 @@ export const AdminNavbar = () => {
       )}
     >
       <Link
-        className="text-lg font-bold first-letter:text-primary"
+        className='text-lg font-bold first-letter:text-primary'
         href={adminRoutes.dashboard.root}
       >
         Techmed
       </Link>
 
-      <div className="flex gap-6">
-        <div className="flex gap-2">
+      <div className='flex gap-6'>
+        <div className='flex gap-2'>
           <AdminNavbarSettingsDropdown />
           <AdminNavbarCreateDropdown />
-          <AdminNavbarNotificationDropdown />
         </div>
         <AdminNavbarUserDropdown />
       </div>

@@ -1,6 +1,7 @@
+import { LinkBtn } from "@/components/common/link-btn"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Laptop, Users, BarChart, Shield } from "lucide-react"
+import { Laptop, Users, BarChart, Shield, ChevronRight, LogIn } from "lucide-react"
 import React from "react" // Import React
 
 export default function AdminIntroBanner() {
@@ -34,10 +35,16 @@ export default function AdminIntroBanner() {
             Streamline your hospital management with our comprehensive admin dashboard. Manage
             patients, staff, and resources efficiently.
           </p>
-          <div className='mt-10 flex justify-center'>
-            <Button size='lg' variant='blue' className='rounded-full px-8'>
+          <div className='flex gap-2 justify-center mt-10'>
+            <Button size='lg' variant='outline'>
               Get Started
+              <ChevronRight className='ml-2 h-4 w-4' />
             </Button>
+
+            <LinkBtn href='/login' size='lg' className='bg-blue-600 hover:bg-blue-700'>
+              Login
+              <LogIn className='ml-2 h-4 w-4' />
+            </LinkBtn>
           </div>
         </div>
 

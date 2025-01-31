@@ -1,22 +1,26 @@
+"use client"
+
+import { Bell, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 
-import { Bell, LogOut } from "lucide-react"
+import { useRouter } from "next/router"
 
 export const AdminNavbarNotificationDropdown = () => {
+  const { push } = useRouter()
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="relative size-9">
+        <Button className='relative size-9'>
           <Bell />
-          <p className="text-xs bg-red-500 text-white size-4 rounded-full flex items-center justify-center absolute top-0 -right-2">
+          <p className='text-xs bg-red-500 text-white size-4 rounded-full flex items-center justify-center absolute top-0 -right-2'>
             5
           </p>
         </Button>
@@ -33,7 +37,7 @@ export const AdminNavbarNotificationDropdown = () => {
         <DropdownMenuItem>Inventories</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <LogOut className="size-4" /> Logout
+          <LogOut className='size-4' /> Logout
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
