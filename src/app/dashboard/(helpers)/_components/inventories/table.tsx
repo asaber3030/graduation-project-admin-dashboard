@@ -6,14 +6,7 @@ import { ATFullInventory } from "../../_types"
 import { DefaultTableFooter } from "@/app/dashboard/(helpers)/_components/common/table-footer"
 import { OrderBy } from "../../_utils/order-by"
 import { EmptyState } from "@/components/common/empty-state"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 import { diffForHuman, showHospitalName } from "@/lib/utils"
 import { adminRoutes } from "../../_utils/routes"
@@ -30,21 +23,10 @@ type Props = {
   showFilters?: boolean
 }
 
-export const AdminInventoriesTable = ({
-  showFilters = true,
-  hasNextPage,
-  searchParams,
-  data
-}: Props) => {
+export const AdminInventoriesTable = ({ showFilters = true, hasNextPage, searchParams, data }: Props) => {
   return (
     <>
-      {showFilters && (
-        <FilterAll
-          searchParams={searchParams}
-          orderByArray={OrderBy.inventories}
-          parentClassName='mb-4'
-        />
-      )}
+      {showFilters && <FilterAll searchParams={searchParams} orderByArray={OrderBy.inventories} parentClassName='mb-4' />}
       {data.length === 0 ? (
         <EmptyState />
       ) : (
@@ -68,18 +50,12 @@ export const AdminInventoriesTable = ({
                   <TableCell>{inventory.name}</TableCell>
                   <TableCell>{inventory.code}</TableCell>
                   <TableCell>
-                    <Link
-                      className='text-blue-500'
-                      href={adminRoutes.hospitals.view(inventory.hospital.id)}
-                    >
+                    <Link className='text-blue-500' href={adminRoutes.hospitals.view(inventory.hospital.id)}>
                       {showHospitalName(inventory.hospital)}
                     </Link>
                   </TableCell>
                   <TableCell>
-                    <Link
-                      className='text-blue-500'
-                      href={adminRoutes.departments.view(inventory.department.id)}
-                    >
+                    <Link className='text-blue-500' href={adminRoutes.departments.view(inventory.department.id)}>
                       {inventory.department.name}
                     </Link>
                   </TableCell>

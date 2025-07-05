@@ -13,16 +13,7 @@ import { DepartmentSchema } from "@/schema"
 import { LoadingButton } from "@/components/common/loading-button"
 import { InputField } from "@/components/common/input-field"
 import { Form } from "@/components/ui/form"
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 
 type Props = {
@@ -41,8 +32,8 @@ export const AdminCreateDepartmentModal = ({ asChild, children }: Props) => {
     resolver: zodResolver(DepartmentSchema.create),
     defaultValues: {
       name: "",
-      description: "",
-    },
+      description: ""
+    }
   })
 
   const createMutation = useMutation({
@@ -51,7 +42,7 @@ export const AdminCreateDepartmentModal = ({ asChild, children }: Props) => {
       showResponseMessage(data, () => {
         setOpen(false)
         form.reset()
-      }),
+      })
   })
 
   const handleSubmit = () => {
@@ -64,26 +55,18 @@ export const AdminCreateDepartmentModal = ({ asChild, children }: Props) => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create Department</DialogTitle>
-          <DialogDescription>
-            Create Department information, It's assigned to current selected hospital
-          </DialogDescription>
+          <DialogDescription>Create Department information, It's assigned to current selected hospital</DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-2">
-            <InputField name="name" label="Name" placeholder="Enter Name" control={form.control} />
-            <InputField
-              name="description"
-              label="Description"
-              placeholder="Enter Description"
-              isTextarea
-              control={form.control}
-            />
+          <form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-2'>
+            <InputField name='name' label='Name' placeholder='Enter Name' control={form.control} />
+            <InputField name='description' label='Description' placeholder='Enter Description' isTextarea control={form.control} />
             <DialogFooter>
-              <section className="flex gap-2">
+              <section className='flex gap-2'>
                 <DialogClose asChild>
-                  <Button variant="outline">Close</Button>
+                  <Button variant='outline'>Close</Button>
                 </DialogClose>
-                <LoadingButton type="submit" loading={createMutation.isPending} variant="success">
+                <LoadingButton type='submit' loading={createMutation.isPending} variant='success'>
                   Create
                 </LoadingButton>
               </section>

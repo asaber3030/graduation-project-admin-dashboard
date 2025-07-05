@@ -1,11 +1,11 @@
 import AdminPageTitle from "@/app/dashboard/(helpers)/_components/common/title"
 
-import { AdminCreateDepartmentModal } from "@/app/dashboard/(helpers)/_components/departments/create-modal"
+import { AdminCreateInventoryModal } from "@/app/dashboard/(helpers)/_components/inventories/create-modal"
 import { AdminInventoriesTable } from "@/app/dashboard/(helpers)/_components/inventories/table"
+import { SearchParams } from "@/types"
 import { Directions } from "@/app/dashboard/(helpers)/_components/common/breadcrumb-directions"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
-import { SearchParams } from "@/types"
 
 import { paginateInventoriesByDepartmentId } from "@/app/dashboard/(helpers)/_actions/inventories"
 import { getDepartmentById } from "@/app/dashboard/(helpers)/_actions/departments"
@@ -48,20 +48,16 @@ export default async function DepartmentIdInventories({ searchParams, params }: 
   return (
     <div>
       <AdminPageTitle title={pageTitle}>
-        <AdminCreateDepartmentModal asChild>
+        <AdminCreateInventoryModal departmentId={department.id} asChild>
           <Button icon={Plus} variant='outline'>
             Create
           </Button>
-        </AdminCreateDepartmentModal>
+        </AdminCreateInventoryModal>
       </AdminPageTitle>
 
       <Directions urls={breadcrumbs} />
 
-      <AdminInventoriesTable
-        searchParams={searchParams}
-        hasNextPage={inventories.hasNextPage}
-        data={inventories.inventories}
-      />
+      <AdminInventoriesTable searchParams={searchParams} hasNextPage={inventories.hasNextPage} data={inventories.inventories} />
     </div>
   )
 }

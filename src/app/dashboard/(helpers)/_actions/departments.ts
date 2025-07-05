@@ -24,10 +24,7 @@ export async function paginateDepartments(searchParams: SearchParams, hospitalId
   const pagination = createPagination(searchParams, total)
   const departments = await db.department.findMany({
     where: {
-      OR: [
-        { name: { contains: searchParams.search ?? "" } },
-        { hospital: { name: { contains: searchParams.search ?? "" } } }
-      ],
+      OR: [{ name: { contains: searchParams.search ?? "" } }, { hospital: { name: { contains: searchParams.search ?? "" } } }],
       hospitalId: specificId
     },
     include: {
@@ -71,10 +68,7 @@ export async function createDepartmentAction(data: any) {
   return actionResponse(200, "Department created successfully")
 }
 
-export async function updateDepartmentAction(
-  id: number,
-  data: z.infer<typeof DepartmentSchema.update>
-) {
+export async function updateDepartmentAction(id: number, data: z.infer<typeof DepartmentSchema.update>) {
   await db.department.update({
     where: { id },
     data

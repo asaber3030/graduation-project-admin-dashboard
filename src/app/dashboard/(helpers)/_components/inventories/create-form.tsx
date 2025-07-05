@@ -27,26 +27,25 @@ type Mutation = {
   data: z.infer<typeof InventorySchema.create>
 }
 
-export const AdminCreateInventtoryModal = () => {
+export const AdminCreateInventoryForm = () => {
   const [searchValue, setSearchValue] = useState("")
   const [selectedDepartmentName, setSelectedSelecetedName] = useState("")
   const [departmentId, setDepartmentId] = useState(0)
 
-  const { departments, isDepartmentsLoading, refetchDepartments } =
-    useSearchDepartments(searchValue)
+  const { departments, isDepartmentsLoading, refetchDepartments } = useSearchDepartments(searchValue)
 
   const form = useForm({
     resolver: zodResolver(InventorySchema.create),
     defaultValues: {
       name: "",
       description: "",
-      code: "",
-    },
+      code: ""
+    }
   })
 
   const createMutation = useMutation({
     mutationFn: ({ data }: Mutation) => createInventoryAction(departmentId, data),
-    onSuccess: (data) => showResponseMessage(data),
+    onSuccess: (data) => showResponseMessage(data)
   })
 
   const onCommandSelect = (currentValue: string, id: number) => {
@@ -64,30 +63,20 @@ export const AdminCreateInventtoryModal = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-2">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-2'>
         <section>
           <Label>Select Department</Label>
-          <SearchBox
-            value={selectedDepartmentName}
-            buttonClassName="w-full"
-            setValue={setSearchValue}
-          >
+          <SearchBox value={selectedDepartmentName} buttonClassName='w-full' setValue={setSearchValue}>
             {isDepartmentsLoading ? (
-              <div className="flex items-center justify-center">
-                <Loader2 className="animate-spin" />
+              <div className='flex items-center justify-center'>
+                <Loader2 className='animate-spin' />
               </div>
             ) : (
               <>
                 {departments?.map((item) => (
-                  <CommandItem
-                    key={item.id}
-                    value={String(item.name + "#" + item.id)}
-                    onSelect={(currentValue) => onCommandSelect(currentValue, item.id)}
-                  >
-                    <ActiveCheckIcon
-                      active={selectedDepartmentName === item.name + "#" + item.id}
-                    />
-                    {item.name} - ID <ArrowRight className="size-4" /> <b>{item.id}</b>
+                  <CommandItem key={item.id} value={String(item.name + "#" + item.id)} onSelect={(currentValue) => onCommandSelect(currentValue, item.id)}>
+                    <ActiveCheckIcon active={selectedDepartmentName === item.name + "#" + item.id} />
+                    {item.name} - ID <ArrowRight className='size-4' /> <b>{item.id}</b>
                   </CommandItem>
                 ))}
               </>
@@ -95,21 +84,15 @@ export const AdminCreateInventtoryModal = () => {
           </SearchBox>
         </section>
 
-        <InputField name="code" label="Code" placeholder="Code" control={form.control} />
-        <InputField name="name" label="Name" placeholder="Enter Name" control={form.control} />
-        <InputField
-          name="description"
-          label="Description"
-          placeholder="Enter Description"
-          isTextarea
-          control={form.control}
-        />
+        <InputField name='code' label='Code' placeholder='Code' control={form.control} />
+        <InputField name='name' label='Name' placeholder='Enter Name' control={form.control} />
+        <InputField name='description' label='Description' placeholder='Enter Description' isTextarea control={form.control} />
 
-        <section className="flex gap-2">
-          <LoadingButton type="submit" loading={createMutation.isPending} variant="success">
+        <section className='flex gap-2'>
+          <LoadingButton type='submit' loading={createMutation.isPending} variant='success'>
             Create
           </LoadingButton>
-          <LinkBtn variant="outline" type="button" href={adminRoutes.inventories.root}>
+          <LinkBtn variant='outline' type='button' href={adminRoutes.inventories.root}>
             Close
           </LinkBtn>
         </section>

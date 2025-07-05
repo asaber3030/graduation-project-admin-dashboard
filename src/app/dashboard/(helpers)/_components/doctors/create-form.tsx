@@ -24,6 +24,7 @@ import { Label } from "@/components/ui/label"
 import { CommandItem } from "@/components/ui/command"
 import { SearchBox } from "@/components/common/search-box"
 import { ActiveCheckIcon } from "@/components/common/active-check-icon"
+import { redirect } from "next/navigation"
 
 type Mutation = {
   data: z.infer<typeof DoctorSchema.create>
@@ -32,20 +33,21 @@ type Mutation = {
 
 export const AdminCreateDoctorForm = () => {
   const form = useForm({
-    resolver: zodResolver(DoctorSchema.create),
+    resolver: zodResolver(DoctorSchema.create)
   })
 
   const [searchValue, setSearchValue] = useState("")
   const [selectedDepartmentName, setSelectedSelecetedName] = useState("")
   const [departmentId, setDepartmentId] = useState(0)
 
-  const { departments, isDepartmentsLoading, refetchDepartments } =
-    useSearchDepartments(searchValue)
+  const { departments, isDepartmentsLoading, refetchDepartments } = useSearchDepartments(searchValue)
 
   const createMutation = useMutation({
-    mutationFn: ({ departmentId, data }: Mutation) =>
-      createDoctorAction(departmentId, form.getValues() as any),
-    onSuccess: (data) => showResponseMessage(data),
+    mutationFn: ({ departmentId, data }: Mutation) => createDoctorAction(departmentId, form.getValues() as any),
+    onSuccess: (data) =>
+      showResponseMessage(data, () => {
+        if (data.status == 200) return redirect(adminRoutes.doctors.root)
+      })
   })
 
   const onCommandSelect = (currentValue: string, id: number) => {
@@ -56,7 +58,7 @@ export const AdminCreateDoctorForm = () => {
   const handleCreate = () => {
     createMutation.mutate({
       data: form.getValues() as any,
-      departmentId: departmentId,
+      departmentId: departmentId
     })
   }
 
@@ -66,30 +68,20 @@ export const AdminCreateDoctorForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleCreate)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(handleCreate)} className='space-y-4'>
         <section>
           <Label>Select Department</Label>
-          <SearchBox
-            value={selectedDepartmentName}
-            buttonClassName="w-full"
-            setValue={setSearchValue}
-          >
+          <SearchBox value={selectedDepartmentName} buttonClassName='w-full' setValue={setSearchValue}>
             {isDepartmentsLoading ? (
-              <div className="flex items-center justify-center">
-                <Loader2 className="animate-spin" />
+              <div className='flex items-center justify-center'>
+                <Loader2 className='animate-spin' />
               </div>
             ) : (
               <>
                 {departments?.map((item) => (
-                  <CommandItem
-                    key={item.id}
-                    value={String(item.name + "#" + item.id)}
-                    onSelect={(currentValue) => onCommandSelect(currentValue, item.id)}
-                  >
-                    <ActiveCheckIcon
-                      active={selectedDepartmentName === item.name + "#" + item.id}
-                    />
-                    {item.name} - ID <ArrowRight className="size-4" /> <b>{item.id}</b>
+                  <CommandItem key={item.id} value={String(item.name + "#" + item.id)} onSelect={(currentValue) => onCommandSelect(currentValue, item.id)}>
+                    <ActiveCheckIcon active={selectedDepartmentName === item.name + "#" + item.id} />
+                    {item.name} - ID <ArrowRight className='size-4' /> <b>{item.id}</b>
                   </CommandItem>
                 ))}
               </>
@@ -97,51 +89,25 @@ export const AdminCreateDoctorForm = () => {
           </SearchBox>
         </section>
 
-        <div className="grid xl:grid-cols-2 grid-cols-1 gap-4">
-          <InputField name="name" placeholder="Name" label="Name" control={form.control} />
-          <InputField
-            name="username"
-            placeholder="Username"
-            label="Username"
-            control={form.control}
-          />
+        <div className='grid xl:grid-cols-2 grid-cols-1 gap-4'>
+          <InputField name='name' placeholder='Name' label='Name' control={form.control} />
+          <InputField name='username' placeholder='Username' label='Username' control={form.control} />
         </div>
 
-        <InputField
-          name="email"
-          placeholder="Email"
-          label="E-mail Address"
-          control={form.control}
-        />
+        <InputField name='email' placeholder='Email' label='E-mail Address' control={form.control} />
 
-        <InputField
-          name="password"
-          placeholder="Password"
-          label="Password"
-          type="password"
-          control={form.control}
-        />
+        <InputField name='password' placeholder='Password' label='Password' type='password' control={form.control} />
 
-        <InputField
-          name="jobTitle"
-          placeholder="Job title"
-          label="Job title"
-          control={form.control}
-        />
+        <InputField name='jobTitle' placeholder='Job title' label='Job title' control={form.control} />
 
-        <InputField
-          name="phoneNumber"
-          placeholder="Phone"
-          label="Phone Number"
-          control={form.control}
-        />
+        <InputField name='phoneNumber' placeholder='Phone' label='Phone Number' control={form.control} />
 
-        <div className="flex gap-2">
-          <LoadingButton variant="success" loading={createMutation.isPending}>
+        <div className='flex gap-2'>
+          <LoadingButton variant='success' loading={createMutation.isPending}>
             Create
           </LoadingButton>
           <Link href={adminRoutes.doctors.root}>
-            <Button variant="outline">Cancel</Button>
+            <Button variant='outline'>Cancel</Button>
           </Link>
         </div>
       </form>

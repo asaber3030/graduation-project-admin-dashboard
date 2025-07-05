@@ -21,11 +21,7 @@ export default async function Departments({ searchParams }: { searchParams: Sear
         </AdminCreateDepartmentModal>
       </AdminPageTitle>
 
-      <AdminDepartmentsTable
-        searchParams={searchParams}
-        hasNextPage={departments.hasNextPage}
-        data={departments.departments}
-      />
+      <AdminDepartmentsTable searchParams={searchParams} hasNextPage={departments.hasNextPage} data={departments.departments} />
     </div>
   )
 }

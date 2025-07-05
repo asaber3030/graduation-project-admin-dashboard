@@ -1,26 +1,4 @@
-import {
-  Box,
-  BriefcaseBusiness,
-  BriefcaseMedical,
-  CheckCheck,
-  Cog,
-  DollarSign,
-  File,
-  Home,
-  HospitalIcon,
-  LayoutPanelTop,
-  Lock,
-  LockKeyhole,
-  MailPlus,
-  NotepadTextDashed,
-  Pickaxe,
-  Plus,
-  Syringe,
-  User,
-  UserPlus,
-  Users,
-  Workflow
-} from "lucide-react"
+import { Box, BriefcaseBusiness, BriefcaseMedical, CheckCheck, Cog, DollarSign, File, Home, HospitalIcon, LayoutPanelTop, Lock, LockKeyhole, MailPlus, NotepadTextDashed, Pickaxe, Plus, ShoppingCart, Syringe, User, UserPlus, Users, Workflow } from "lucide-react"
 
 import { v4 } from "uuid"
 import { adminRoutes } from "./routes"
@@ -112,6 +90,30 @@ export const adminSidebarGroups = [
       },
       {
         id: v4(),
+        label: "Products",
+        url: adminRoutes.products.root,
+        icon: ShoppingCart,
+        hasItems: false,
+        items: []
+      },
+      {
+        id: v4(),
+        label: "Categories",
+        url: adminRoutes.categories.root,
+        icon: CheckCheck,
+        hasItems: false,
+        items: []
+      },
+      {
+        id: v4(),
+        label: "Orders",
+        url: adminRoutes.orders.root,
+        icon: DollarSign,
+        hasItems: false,
+        items: []
+      },
+      {
+        id: v4(),
         label: "Prescriptions",
         url: adminRoutes.prescriptions.root,
         icon: NotepadTextDashed,
@@ -128,7 +130,7 @@ export const adminSidebarGroups = [
       {
         id: v4(),
         label: "Profile",
-        url: `/admin/profile`,
+        url: `/dashboard/profile`,
         icon: User
       }
     ]

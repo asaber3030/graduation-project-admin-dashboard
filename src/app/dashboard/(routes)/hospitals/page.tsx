@@ -9,16 +9,10 @@ import { DefaultTableFooter } from "@/app/dashboard/(helpers)/_components/common
 import { paginateHospitals } from "@/app/dashboard/(helpers)/_actions/hospitals"
 import { HospitalActionsDropdown } from "@/app/dashboard/(helpers)/_components/hospitals/hospital-actions-dropdown"
 import { EmptyState } from "@/components/common/empty-state"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 import { diffForHuman } from "@/lib/utils"
+import { OrderBy } from "@/lib/order-by"
 
 export default async function Hospitals({ searchParams }: { searchParams: SearchParams }) {
   const hospitals = await paginateHospitals(searchParams)
@@ -31,11 +25,7 @@ export default async function Hospitals({ searchParams }: { searchParams: Search
         </Button>
       </AdminPageTitle>
 
-      <FilterAll
-        searchParams={searchParams}
-        orderByArray={[{ label: "Name", name: "name" }]}
-        parentClassName='mb-4'
-      />
+      <FilterAll searchParams={searchParams} orderByArray={OrderBy.hospitals} parentClassName='mb-4' />
       {hospitals.hospitals.length === 0 && <EmptyState />}
 
       <Table>
@@ -54,13 +44,9 @@ export default async function Hospitals({ searchParams }: { searchParams: Search
             <TableRow key={`hospital-row-${hospital.id}`}>
               <TableCell className='font-medium'>{hospital.id}</TableCell>
               <TableCell>
-                <Image
-                  className='rounded-md object-cover'
-                  src={hospital.logo}
-                  width={40}
-                  height={40}
-                  alt='Hospital Logo'
-                />
+                <div>
+                  <img className='rounded-md object-cover' src={hospital.logo} width={40} height={40} alt='Hospital Logo' />
+                </div>
               </TableCell>
               <TableCell>{hospital.name}</TableCell>
               <TableCell>{hospital.location}</TableCell>

@@ -32,13 +32,13 @@ export const AdminUpdateInventtoryForm = ({ inventory }: Props) => {
     defaultValues: {
       name: inventory.name,
       description: inventory.description,
-      code: inventory.code,
-    },
+      code: inventory.code
+    }
   })
 
   const updateMutation = useMutation({
     mutationFn: ({ data }: Mutation) => updateInventoryAction(inventory.id, data),
-    onSuccess: (data) => showResponseMessage(data),
+    onSuccess: (data) => showResponseMessage(data)
   })
 
   const handleSubmit = () => {
@@ -48,22 +48,16 @@ export const AdminUpdateInventtoryForm = ({ inventory }: Props) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-2">
-        <InputField name="code" label="Code" placeholder="Code" control={form.control} />
-        <InputField name="name" label="Name" placeholder="Enter Name" control={form.control} />
-        <InputField
-          name="description"
-          label="Description"
-          placeholder="Enter Description"
-          isTextarea
-          control={form.control}
-        />
+      <form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-2'>
+        <InputField name='code' label='Code' placeholder='Code' control={form.control} />
+        <InputField name='name' label='Name' placeholder='Enter Name' control={form.control} />
+        <InputField name='description' label='Description' placeholder='Enter Description' isTextarea control={form.control} />
 
-        <section className="flex gap-2">
-          <LoadingButton type="submit" loading={updateMutation.isPending} variant="success">
-            Create
+        <section className='flex gap-2'>
+          <LoadingButton type='submit' loading={updateMutation.isPending} variant='success'>
+            Update
           </LoadingButton>
-          <LinkBtn variant="outline" type="button" href={adminRoutes.inventories.root}>
+          <LinkBtn variant='outline' type='button' href={adminRoutes.inventories.root}>
             Close
           </LinkBtn>
         </section>

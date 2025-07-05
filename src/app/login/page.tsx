@@ -13,6 +13,8 @@ export default async function AdminLoginPage() {
   const admin = await getCurrentAdmin()
   if (admin) return redirect(adminRoutes.dashboard.root)
 
+  console.log("admin:", admin)
+
   return (
     <div>
       <HomeHeader />

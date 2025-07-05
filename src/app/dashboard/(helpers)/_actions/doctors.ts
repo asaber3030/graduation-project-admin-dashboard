@@ -18,7 +18,7 @@ export async function getLimitDoctorLoginHistory(doctorId: number) {
   const loginHistory = await db.doctorLoginHistory.findMany({
     where: { doctorId },
     orderBy: { createdAt: "desc" },
-    take: 5,
+    take: 5
   })
   return loginHistory
 }
@@ -26,54 +26,45 @@ export async function getLimitDoctorLoginHistory(doctorId: number) {
 export async function paginateDoctors(searchParams: SearchParams) {
   const hospital = await currentHospital()
   const total = await db.doctor.count({
-    where: { hospitalId: hospital.id },
+    where: { hospitalId: hospital.id }
   })
   const pagination = createPagination(searchParams, total)
   const doctors = await db.doctor.findMany({
     where: {
-      OR: [
-        { name: { contains: searchParams.search ?? "" } },
-        { username: { contains: searchParams.search ?? "" } },
-      ],
-      hospitalId: hospital.id,
+      OR: [{ name: { contains: searchParams.search ?? "" } }, { username: { contains: searchParams.search ?? "" } }],
+      hospitalId: hospital.id
     },
     include: { department: true, hospital: true },
 
-    ...pagination.args,
+    ...pagination.args
   })
 
   return {
     doctors,
-    ...pagination,
+    ...pagination
   }
 }
 
-export async function paginateDoctorsByDepartment(
-  searchParams: SearchParams,
-  departmentId: number
-) {
+export async function paginateDoctorsByDepartment(searchParams: SearchParams, departmentId: number) {
   const hospital = await currentHospital()
   const total = await db.doctor.count({
-    where: { hospitalId: hospital.id, departmentId },
+    where: { hospitalId: hospital.id, departmentId }
   })
   const pagination = createPagination(searchParams, total)
   const doctors = await db.doctor.findMany({
     where: {
-      OR: [
-        { name: { contains: searchParams.search ?? "" } },
-        { username: { contains: searchParams.search ?? "" } },
-      ],
+      OR: [{ name: { contains: searchParams.search ?? "" } }, { username: { contains: searchParams.search ?? "" } }],
       hospitalId: hospital.id,
-      departmentId,
+      departmentId
     },
     include: { department: true, hospital: true },
 
-    ...pagination.args,
+    ...pagination.args
   })
 
   return {
     doctors,
-    ...pagination,
+    ...pagination
   }
 }
 
@@ -88,7 +79,7 @@ export async function updateDoctorAction(id: number, data: z.infer<typeof Doctor
   if (data.email) {
     const emailExists = await db.doctor.findFirst({
       where: { email: data.email, id: { not: id } },
-      select: { id: true },
+      select: { id: true }
     })
     if (emailExists) return actionResponse(responseCodes.badRequest, "Email already exists")
   }
@@ -96,7 +87,7 @@ export async function updateDoctorAction(id: number, data: z.infer<typeof Doctor
   if (data.username) {
     const usernameExists = await db.doctor.findFirst({
       where: { username: data.username, id: { not: id } },
-      select: { id: true },
+      select: { id: true }
     })
     if (usernameExists) return actionResponse(responseCodes.badRequest, "Username already exists")
   }
@@ -104,25 +95,23 @@ export async function updateDoctorAction(id: number, data: z.infer<typeof Doctor
   if (data.phoneNumber) {
     const phoneExists = await db.doctor.findFirst({
       where: { phoneNumber: data.phoneNumber, id: { not: id } },
-      select: { id: true },
+      select: { id: true }
     })
     if (phoneExists) return actionResponse(responseCodes.badRequest, "Phone Number already exists")
   }
 
   await db.doctor.update({
     where: { id },
-    data,
+    data
   })
+
   revalidatePath(adminRoutes.doctors.root)
   revalidatePath(adminRoutes.doctors.update(id))
   revalidatePath(adminRoutes.doctors.view(id))
   return actionResponse(responseCodes.ok, "Doctor updated successfully")
 }
 
-export async function createDoctorAction(
-  departmentId: number,
-  data: z.infer<typeof DoctorSchema.create>
-) {
+export async function createDoctorAction(departmentId: number, data: z.infer<typeof DoctorSchema.create>) {
   const hospital = await currentHospital()
 
   const usernameExists = await findDoctor({ username: data.username })
@@ -141,8 +130,8 @@ export async function createDoctorAction(
       ...data,
       departmentId,
       hospitalId: hospital.id,
-      password: hashedPassword,
-    },
+      password: hashedPassword
+    }
   })
 
   revalidatePath(adminRoutes.doctors.root)
@@ -158,14 +147,10 @@ export async function deleteDoctorAction(id: number) {
 export async function searchDoctors(search?: string) {
   const doctors = await db.doctor.findMany({
     where: {
-      OR: [
-        { name: { contains: search } },
-        { username: { contains: search } },
-        { email: { contains: search } },
-      ],
-      hospitalId: (await currentHospital()).id,
+      OR: [{ name: { contains: search } }, { username: { contains: search } }, { email: { contains: search } }],
+      hospitalId: (await currentHospital()).id
     },
-    take: 10,
+    take: 10
   })
   return doctors
 }

@@ -13,14 +13,7 @@ import { adminRoutes } from "../../_utils/routes"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { MedicineSchema } from "@/schema"
 import { FilterBySearch } from "@/components/common/filter-by-search"
 import { LoadingButton } from "@/components/common/loading-button"
@@ -63,26 +56,23 @@ export const AdminUpdateMedicineForm = ({ medicine, dosageForms }: Props) => {
       concentration: medicine.concentration,
       price: medicine.price,
       numberOfTape: medicine.numberOfTape,
-      numberOfPillsPerTape: medicine.numberOfPillsPerTape,
-    },
+      numberOfPillsPerTape: medicine.numberOfPillsPerTape
+    }
   })
 
   const [searchValue, setSearchValue] = useState("")
-  const [selectedInventoryName, setSelectedSelecetedName] = useState(
-    medicine.inventory.name + "#" + medicine.inventory.id
-  )
+  const [selectedInventoryName, setSelectedSelecetedName] = useState(medicine.inventory.name + "#" + medicine.inventory.id)
   const [inventoryId, setInventoryId] = useState(medicine.inventory.id)
   const [dosageFormId, setDosageFormId] = useState(medicine.dosageFormId)
   const [image, setImage] = useState<File | undefined>(undefined)
   const [barcode, setBarcode] = useState<File | undefined>(undefined)
 
-  const { inventories, isInventoriesLoading, refetchInventories } =
-    useSearchInventories(searchValue)
+  const { inventories, isInventoriesLoading, refetchInventories } = useSearchInventories(searchValue)
 
   const departmentsValues = inventories?.map((inventory) => ({
     id: inventory.id,
     label: inventory.name,
-    value: inventory.name + "#" + inventory.id,
+    value: inventory.name + "#" + inventory.id
   }))
 
   const onCommandSelect = (currentValue: string, id: number) => {
@@ -91,9 +81,8 @@ export const AdminUpdateMedicineForm = ({ medicine, dosageForms }: Props) => {
   }
 
   const updateMutation = useMutation({
-    mutationFn: ({ inventoryId, dosageFormId, data, formData }: Mutation) =>
-      updateMedicineAction(medicine.id, dosageFormId, inventoryId, data, formData),
-    onSuccess: (data) => showResponseMessage(data),
+    mutationFn: ({ inventoryId, dosageFormId, data, formData }: Mutation) => updateMedicineAction(medicine.id, dosageFormId, inventoryId, data, formData),
+    onSuccess: (data) => showResponseMessage(data)
   })
 
   console.log({ errors: form.formState.errors })
@@ -108,7 +97,7 @@ export const AdminUpdateMedicineForm = ({ medicine, dosageForms }: Props) => {
       data: form.getValues() as z.infer<typeof MedicineSchema.create>,
       inventoryId,
       dosageFormId,
-      formData,
+      formData
     })
   }
 
@@ -118,24 +107,14 @@ export const AdminUpdateMedicineForm = ({ medicine, dosageForms }: Props) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleCreate)} className="space-y-4">
-        <FilterBySearch
-          formLabel="Select an inventory"
-          value={selectedInventoryName}
-          setValue={setSearchValue}
-          isLoading={isInventoriesLoading}
-          onCommandSelect={onCommandSelect}
-          data={departmentsValues}
-        />
+      <form onSubmit={form.handleSubmit(handleCreate)} className='space-y-4'>
+        <FilterBySearch formLabel='Select an inventory' value={selectedInventoryName} setValue={setSearchValue} isLoading={isInventoriesLoading} onCommandSelect={onCommandSelect} data={departmentsValues} />
 
         <div>
           <Label>Select Dosage Form</Label>
-          <Select
-            defaultValue={String(dosageFormId)}
-            onValueChange={(value) => setDosageFormId(Number(value))}
-          >
+          <Select defaultValue={String(dosageFormId)} onValueChange={(value) => setDosageFormId(Number(value))}>
             <SelectTrigger>
-              <SelectValue placeholder="Select a Dosage Form" />
+              <SelectValue placeholder='Select a Dosage Form' />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
@@ -149,111 +128,50 @@ export const AdminUpdateMedicineForm = ({ medicine, dosageForms }: Props) => {
           </Select>
         </div>
 
-        <div className="grid xl:grid-cols-2 grid-cols-1 gap-4">
-          <FileField
-            label="Image"
-            icon={FileIcon}
-            name="image"
-            onChange={(e) => setImage(e.target.files?.[0])}
-          />
-          <FileField
-            label="Barcode Image"
-            icon={FileIcon}
-            name="barcode"
-            onChange={(e) => setBarcode(e.target.files?.[0])}
-          />
+        <div className='grid xl:grid-cols-2 grid-cols-1 gap-4'>
+          <FileField label='Image' icon={FileIcon} name='image' onChange={(e) => setImage(e.target.files?.[0])} />
+          <FileField label='Barcode Image' icon={FileIcon} name='barcode' onChange={(e) => setBarcode(e.target.files?.[0])} />
         </div>
 
-        <div className="grid xl:grid-cols-2 grid-cols-1 gap-4">
-          <InputField name="arName" placeholder="arName" label="arName" control={form.control} />
-          <InputField name="enName" placeholder="enName" label="enName" control={form.control} />
+        <div className='grid xl:grid-cols-2 grid-cols-1 gap-4'>
+          <InputField name='arName' placeholder='Arabic Name' label='Arabic Name' control={form.control} />
+          <InputField name='enName' placeholder='English Name' label='English Name' control={form.control} />
         </div>
 
-        <div className="grid xl:grid-cols-2 grid-cols-1 gap-4">
-          <InputField
-            isTextarea
-            name="enDescription"
-            placeholder="enDescription"
-            label="enDescription"
-            control={form.control}
-          />
-          <InputField
-            isTextarea
-            name="arDescription"
-            placeholder="arDescription"
-            label="arDescription"
-            control={form.control}
-          />
+        <div className='grid xl:grid-cols-2 grid-cols-1 gap-4'>
+          <InputField isTextarea name='enDescription' placeholder='English Description' label='English Description' control={form.control} />
+          <InputField isTextarea name='arDescription' placeholder='Arabic Description' label='Arabic Description' control={form.control} />
         </div>
 
-        <div className="grid xl:grid-cols-2 grid-cols-1 gap-4">
-          <InputField
-            name="activeIngredients"
-            placeholder="activeIngredients"
-            label="activeIngredients"
-            control={form.control}
-          />
-          <InputField
-            valuseAsNumber
-            name="totalTablets"
-            placeholder="totalTablets"
-            label="totalTablets"
-            control={form.control}
-          />
+        <div className='grid xl:grid-cols-2 grid-cols-1 gap-4'>
+          <InputField name='activeIngredients' placeholder='Active Ingredients' label='Active Ingredients' control={form.control} />
+          <InputField valuseAsNumber name='totalTablets' placeholder='Total Tablets' label='Total Tablets' type='number' control={form.control} />
         </div>
 
-        <div className="grid xl:grid-cols-2 grid-cols-1 gap-4">
-          <InputField name="bgColor" placeholder="bgColor" label="bgColor" control={form.control} />
-          <InputField
-            name="textColor"
-            placeholder="textColor"
-            label="textColor"
-            control={form.control}
-          />
+        <div className='grid xl:grid-cols-2 grid-cols-1 gap-4'>
+          <InputField name='bgColor' placeholder='Background Color' label='Background Color' control={form.control} />
+          <InputField name='textColor' placeholder='Text Color' label='Text Color' control={form.control} />
         </div>
 
-        <div className="grid xl:grid-cols-2 grid-cols-1 gap-4">
-          <InputField name="notes" placeholder="notes" label="notes" control={form.control} />
-          <InputField
-            name="concentration"
-            placeholder="concentration"
-            label="concentration"
-            control={form.control}
-          />
+        <div className='grid xl:grid-cols-2 grid-cols-1 gap-4'>
+          <InputField name='notes' placeholder='Notes' label='Notes' control={form.control} />
+          <InputField name='concentration' placeholder='Concentration' label='Concentration' control={form.control} />
         </div>
 
-        <InputField
-          valuseAsNumber
-          name="price"
-          placeholder="price"
-          label="price"
-          control={form.control}
-        />
+        <InputField valuseAsNumber name='price' placeholder='Price' label='Price' control={form.control} />
 
-        <div className="grid xl:grid-cols-2 grid-cols-1 gap-4">
-          <InputField
-            valuseAsNumber
-            name="numberOfTape"
-            placeholder="numberOfTape"
-            label="numberOfTape"
-            control={form.control}
-          />
-          <InputField
-            valuseAsNumber
-            name="numberOfPillsPerTape"
-            placeholder="numberOfPillsPerTape"
-            label="numberOfPillsPerTape"
-            control={form.control}
-          />
+        <div className='grid xl:grid-cols-2 grid-cols-1 gap-4'>
+          <InputField valuseAsNumber name='numberOfTape' placeholder='Number Of Tapes' label='Number Of Tapes' control={form.control} />
+          <InputField valuseAsNumber name='numberOfPillsPerTape' placeholder='Number Of Pills Per Tape' label='Number Of Pills Per Tape' control={form.control} />
         </div>
 
-        <div className="flex gap-2">
-          <LoadingButton variant="blue" loading={updateMutation.isPending}>
+        <div className='flex gap-2'>
+          <LoadingButton variant='blue' loading={updateMutation.isPending}>
             Update
           </LoadingButton>
 
           <Link href={adminRoutes.medicine.root}>
-            <Button variant="outline">Cancel</Button>
+            <Button variant='outline'>Cancel</Button>
           </Link>
         </div>
       </form>

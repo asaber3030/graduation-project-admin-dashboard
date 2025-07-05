@@ -5,6 +5,8 @@ import { UpdateHospitalForm } from "@/app/dashboard/(helpers)/_components/hospit
 import { showHospitalName } from "@/lib/utils"
 import { getHospital } from "@/actions/app"
 import { notFound } from "next/navigation"
+import { UpdateHospitalPasswordForm } from "@/app/dashboard/(helpers)/_components/hospitals/change-password-form"
+import { Separator } from "@/components/ui/separator"
 
 type Props = {
   params: { hospitalId: string }
@@ -23,9 +25,17 @@ export default async function HospitalIdUpdatePage({ params }: Props) {
   )
 
   return (
-    <div>
+    <div className='space-y-4'>
       <AdminPageTitle title={pageTitle} />
-      <UpdateHospitalForm hospital={hospital} />
+      <div>
+        <h2 className='text-lg mb-2 pb-1 border-b font-semibold'>Hospital Details</h2>
+        <UpdateHospitalForm hospital={hospital} />
+      </div>
+
+      <div>
+        <h2 className='text-lg mb-2 pb-1 border-b font-semibold'>Hospital Password Manager</h2>
+        <UpdateHospitalPasswordForm hospital={hospital} />
+      </div>
     </div>
   )
 }

@@ -19,67 +19,84 @@ export async function paginateInventories(searchParams: SearchParams, hospitalId
   if (hospitalId) specificId = hospitalId
 
   const total = await db.inventory.count({
-    where: { hospitalId: specificId },
+    where: { hospitalId: specificId }
   })
 
   const pagination = createPagination(searchParams, total)
 
   const inventories = await db.inventory.findMany({
     where: {
-      OR: [
-        { name: { contains: searchParams.search ?? "" } },
-        { code: { contains: searchParams.search ?? "" } },
-      ],
-      hospitalId: specificId,
+      OR: [{ name: { contains: searchParams.search ?? "" } }, { code: { contains: searchParams.search ?? "" } }],
+      hospitalId: specificId
     },
     include: { department: true, hospital: true },
-    ...pagination.args,
+    ...pagination.args
   })
 
   return {
     inventories,
-    ...pagination,
+    ...pagination
   }
 }
 
-export async function paginateInventoriesByDepartmentId(
-  searchParams: SearchParams,
-  departmentId: number
-) {
+export async function paginateInventoriesByDepartmentId(searchParams: SearchParams, departmentId: number) {
   let hospital = await currentHospital()
   let specificId = hospital.id
 
   const total = await db.inventory.count({
-    where: { hospitalId: specificId, departmentId },
+    where: { hospitalId: specificId, departmentId }
   })
 
   const pagination = createPagination(searchParams, total)
 
   const inventories = await db.inventory.findMany({
     where: {
-      OR: [
-        { name: { contains: searchParams.search ?? "" } },
-        { code: { contains: searchParams.search ?? "" } },
-      ],
+      OR: [{ name: { contains: searchParams.search ?? "" } }, { code: { contains: searchParams.search ?? "" } }],
       hospitalId: specificId,
-      departmentId,
+      departmentId
     },
     include: { department: true, hospital: true },
-    ...pagination.args,
+    ...pagination.args
   })
 
   return {
     inventories,
-    ...pagination,
+    ...pagination
+  }
+}
+
+export async function paginateInventoryMedicine(searchParams: SearchParams, inventoryId: number) {
+  let hospital = await currentHospital()
+  let specificId = hospital.id
+
+  const total = await db.medicine.count({
+    where: { hospitalId: specificId, inventoryId }
+  })
+
+  const pagination = createPagination(searchParams, total)
+
+  const medicine = await db.medicine.findMany({
+    where: {
+      OR: [{ arName: { contains: searchParams.search ?? "" } }, { enName: { contains: searchParams.search ?? "" } }],
+      hospitalId: specificId,
+      inventoryId
+    },
+    include: { dosageForm: true, inventory: true, hospital: true },
+    ...pagination.args
+  })
+
+  return {
+    medicine,
+    ...pagination
   }
 }
 
 export async function searchInventories(search?: string) {
   const inventories = await db.inventory.findMany({
     where: {
-      OR: [{ name: { contains: search } }, { code: { contains: search } }],
+      OR: [{ name: { contains: search } }, { code: { contains: search } }]
     },
-    take: 10,
+    take: 10
   })
 
   return inventories
@@ -88,18 +105,15 @@ export async function searchInventories(search?: string) {
 export async function findInventoryById(id: number) {
   return await db.inventory.findUnique({
     where: { id },
-    include: { department: true, hospital: true },
+    include: { department: true, hospital: true }
   })
 }
 
-export async function createInventoryAction(
-  departmentId: number,
-  data: z.infer<typeof InventorySchema.create>
-) {
+export async function createInventoryAction(departmentId: number, data: z.infer<typeof InventorySchema.create>) {
   const hospital = await currentHospital()
 
   const codeExists = await db.inventory.findUnique({
-    where: { code: data.code },
+    where: { code: data.code }
   })
 
   if (codeExists) return actionResponse(409, "Inventory code already exists")
@@ -108,8 +122,8 @@ export async function createInventoryAction(
     data: {
       ...data,
       departmentId,
-      hospitalId: hospital.id,
-    },
+      hospitalId: hospital.id
+    }
   })
 
   revalidatePath(adminRoutes.inventories.root)
@@ -117,18 +131,15 @@ export async function createInventoryAction(
   return actionResponse(200, "Inventory created successfully")
 }
 
-export async function updateInventoryAction(
-  id: number,
-  data: z.infer<typeof InventorySchema.update>
-) {
+export async function updateInventoryAction(id: number, data: z.infer<typeof InventorySchema.update>) {
   const codeExists = await db.inventory.findUnique({
-    where: { code: data.code, AND: [{ id: { not: id } }] },
+    where: { code: data.code, AND: [{ id: { not: id } }] }
   })
   if (codeExists) return actionResponse(409, "Inventory code already exists")
 
   await db.inventory.update({
     where: { id },
-    data,
+    data
   })
 
   revalidatePath(adminRoutes.inventories.root)
