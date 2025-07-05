@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database for development
+  postgres-dev:
+    image: postgres:15-alpine
+    container_name: admin-dashboard-postgres-dev
+    environment:
+      POSTGRES_DB: admin_dashboard_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - admin-dashboard-dev-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Development Next.js Application (with hot reload)
+  web-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: admin-dashboard-web-dev
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:password123@postgres-dev:5432/admin_dashboard_dev
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      postgres-dev:
+        condition: service_healthy
+    networks:
+      - admin-dashboard-dev-network
+    command: >
+      sh -c "
+        npx prisma generate &&
+        npx prisma db push &&
+        npm run dev
+      "
+
+volumes:
+  postgres_dev_data:
+
+networks:
+  admin-dashboard-dev-network:
+    driver: bridge

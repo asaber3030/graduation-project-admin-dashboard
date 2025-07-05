@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: admin-dashboard-postgres
+    environment:
+      POSTGRES_DB: admin_dashboard
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - admin-dashboard-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Next.js Application
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: admin-dashboard-web
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://postgres:password123@postgres:5432/admin_dashboard
+      # Add your other environment variables here
+      # - NEXTAUTH_SECRET=your-secret-here
+      # - NEXTAUTH_URL=http://localhost:3000
+      # - AWS_ACCESS_KEY_ID=your-aws-access-key
+      # - AWS_SECRET_ACCESS_KEY=your-aws-secret-key
+      # - AWS_REGION=your-aws-region
+      # - AWS_S3_BUCKET=your-s3-bucket
+      # - SUPABASE_URL=your-supabase-url
+      # - SUPABASE_ANON_KEY=your-supabase-anon-key
+      # - FIREBASE_CONFIG=your-firebase-config
+      # - CLOUDINARY_CLOUD_NAME=your-cloudinary-cloud-name
+      # - CLOUDINARY_API_KEY=your-cloudinary-api-key
+      # - CLOUDINARY_API_SECRET=your-cloudinary-api-secret
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - admin-dashboard-network
+    volumes:
+      - ./prisma:/app/prisma
+    command: >
+      sh -c "
+        npx prisma migrate deploy &&
+        npx prisma db seed &&
+        node server.js
+      "
+
+volumes:
+  postgres_data:
+
+networks:
+  admin-dashboard-network:
+    driver: bridge
