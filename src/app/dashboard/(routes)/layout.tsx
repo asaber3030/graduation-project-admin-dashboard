@@ -14,8 +14,6 @@ export default async function AdminRootLayout({ children }: { children: React.Re
   const admin = await getCurrentAdmin()
   if (!admin) return redirect(adminRoutes.auth.login)
 
-  console.log("Admin:", admin)
-
   const hospital = await currentHospital()
 
   return (
